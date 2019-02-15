@@ -1,10 +1,21 @@
-# NASM Learning
+# Understanding Windows x64 Assembly code repository #
 
-## About
+## About ##
 
-Various exercises to get familiar with programming for the x86-64 instruction set.
+This repository hosts the code samples for the [accompanying tutorial](https://sonictk.github.io/asm_tutorial/).
+
+It also contains a whole host of other samples that I was playing with when going
+through [Ray Seyfarth's books](http://rayseyfarth.com/) on the subject.
+
+## Usage ##
+
+Please refer to the instructions in the `build.bat` script for instructions on how t
+to build the examples in this repository. Folders contain their own build scripts
+for their own individual projects.
 
 ## Sample ``.dir-locals.el`` files
+
+This is what I use for when I'm programming in Emacs.
 
 ### Windows
 ```
