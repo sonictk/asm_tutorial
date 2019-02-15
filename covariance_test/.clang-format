@@ -1,0 +1,46 @@
+---
+BasedOnStyle: LLVM
+AccessModifierOffset: '0'
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignEscapedNewlinesLeft: 'true'
+AlignOperands: 'true'
+AlignTrailingComments: 'true'
+AllowAllParametersOfDeclarationOnNextLine: 'true'
+AllowShortBlocksOnASingleLine: 'true'
+AllowShortCaseLabelsOnASingleLine: 'true'
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: 'true'
+AllowShortLoopsOnASingleLine: 'true'
+AlwaysBreakBeforeMultilineStrings: 'true'
+AlwaysBreakTemplateDeclarations: 'true'
+BreakBeforeBraces: Allman
+BreakStringLiterals: 'true'
+ColumnLimit: '100'
+ContinuationIndentWidth: '4'
+IndentCaseLabels: 'false'
+IndentWidth: '4'
+Language: Cpp
+MaxEmptyLinesToKeep: '8'
+ObjCBlockIndentWidth: '4'
+ObjCSpaceAfterProperty: 'false'
+ObjCSpaceBeforeProtocolList: 'false'
+PenaltyReturnTypeOnItsOwnLine: '0'
+PointerAlignment: Right
+ReflowComments: 'false'
+SortIncludes: 'false'
+SpaceAfterCStyleCast: 'false'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: 'false'
+SpacesBeforeTrailingComments: '0'
+SpacesInAngles: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInContainerLiterals: 'false'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+TabWidth: '4'
+UseTab: ForIndentation
+
+...
