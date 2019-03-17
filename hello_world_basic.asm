@@ -16,6 +16,8 @@ main:
     mov     rbp, rsp
     sub     rsp, 32
 
+    call    _CRT_INIT
+
     lea     rcx, [msg]
     call    printf
 

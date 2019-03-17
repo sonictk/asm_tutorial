@@ -742,6 +742,14 @@ other since they occupy the same virtual address space and map to the same
 physical hardware. The only difference is up to us and how we choose to make
 use of these separate regions of memory.
 
+!!! note Direction of heap growth
+   [John Calsbeek](https://twitter.com/jcalsbeek) points out that this diagram
+   is slightly misleading; the heap isn't guaranteed to _always_ grow upwards as
+   a continguous pool of memory. The implementation of how the OS heap functions
+   work is technically not mandated by the x64 ABI, and thus heap addresses
+   should not be given the same treatment of predictability as you would with
+   stack addresses.
+
 ## Other program segments ##
 
 You may have noticed in the the diagram above that in addition to the stack and
@@ -1451,6 +1459,7 @@ segment .data
 segment .text
 global main
 extern ExitProcess
+extern _CRT_INIT
 
 extern printf
 
@@ -1459,6 +1468,8 @@ main:
     mov     rbp, rsp
     sub     rsp, 32
 
+    call    _CRT_INIT
+
     lea     rcx, [msg]
     call    printf
 
@@ -1466,7 +1477,7 @@ main:
     call    ExitProcess
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The first line is the `bits` direcitve and tells the NASM assembler to generate
+The first line is the `bits` directive and tells the NASM assembler to generate
 code designed to run on 64-bit processors, which is what our hardware is. (At
 least, for the purposes of this tutorial.) This directive is not strictly
 required, since you can specify the target object format to the NASM assembler
@@ -1678,8 +1689,7 @@ execute when their program is loaded. The signature usually appears as `int
 main(int argc, char *argv[])`.
 
 However, if you're at all familiar with Win32 API programming, you'll know that
-things are not that
-simple. Technically,
+things are not that simple. Technically,
 [the entry point for Windows programs is defined as `WinMain`, not `main`](https://docs.microsoft.com/en-us/windows/desktop/learnwin32/winmain--the-application-entry-point);
 specifying the
 [subsystem](https://docs.microsoft.com/en-us/cpp/build/reference/subsystem-specify-subsystem?view=vs-2017)
@@ -1689,8 +1699,6 @@ default. Additionally, the MSVCRT's implementation of `main` actually _calls_
 being just a simple wrapper, however, there's one other important thing that
 MSVCRT's `main` function does, and that is to also perform any _static
 initialization_ of variables required.
-
-For example, like our line defining the `msg` variable string. Ruh-roh.
 
 Thus, [the following advice from MSDN](https://docs.microsoft.com/en-us/cpp/error-messages/tool-errors/linker-tools-warning-lnk4210?view=vs-2017):
 
@@ -1707,21 +1715,32 @@ warning LNK4210: .CRT section exists; there may be unhandled static initializers
 
 Which is the linker telling us, "hey, it looks like you've got some data you
 wanted to statically initialize, but the appropriate actions to take for
-_actually_ initializing them haven't been taken."
+_actually_ initializing them haven't been taken." This refers to the fact that
+for global variables that need to be initialized before the ``main()`` function,
+the VCRuntime library startup code (which handles running the static
+initializers or terminators) hasn't been run yet.
 
 !!! note How deep _does_ this rabbit hole go?
-   Savvy readers may have remembered that the MSVC linker has
-   the
+   Savvy readers may have remembered that the MSVC linker has the
    [`/entry` flag](https://docs.microsoft.com/en-us/cpp/build/reference/entry-entry-point-symbol?view=vs-2017),
    which allows you to specify a specific entry point for a program (and which
    we will be making use of very shortly). The truth is, `WinMain` is _just_ a
-   convention for the
-   name
+   convention for the name
    [given to user-provided entry points](https://blogs.msdn.microsoft.com/oldnewthing/20061204-01/?p=28853).
    Since `main` (which actually maps to either `mainCRTStartup`/`WinMainCRTStartup` or
    `wmainCRTStartup`/`wWinMainCRTStartup` depending on the subsystem and
    ASCII/Unicode options) in the MSVCRT ultimately calls `WinMain`, that is
    technically the real entry point of the application.
+
+So hold on a minute: other than our `msg` variable, we don't _actually_ have
+anything that should rely on static initializers. What is this warning for,
+then?
+
+It turns out that `printf` from the VCRuntime library is the culprit here; it
+relies on static initializers for its implementation, thus requiring us to
+initialize the CRT before making use of it, which makes sense, seeing as
+`printf` is part of the CRT after all!
+
 
 ## Making a stack ##
 
@@ -1749,6 +1768,13 @@ at the beginning of every function you write in assembly, so get used to
 it. It's also very useful for identifying where the start of a function is if
 you're reading the assembly of optimized code (i.e. sometimes it could
 indicate the start of an inlined function call).
+
+You then see we initialize the C runtime library as previously mentioned, with the
+following line:
+
+```
+    call    _CRT_INIT
+```
 
 ## Calling functions in assembly ##
 
@@ -5076,6 +5102,9 @@ tutorial, or even in the future as well:
   knowledge and advice.
 
 * [Raffaele Fragapane](https://twitter.com/ThE_JacO), for the same thing.
+
+* [John Calsbeek](https://twitter.com/jcalsbeek), for his uncanny ability to
+  spot the gaps in my knowledge, and more importantly, to fill them up.
 
 * [Morgan McGuire](https://twitter.com/CasualEffects), for the Markdeep syntax
   used in this tutorial.
