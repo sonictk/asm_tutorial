@@ -1078,13 +1078,13 @@ along with the first item on the stack as well:
 *************************************************************************
 *                                                                       *
 *   +---------+---------+      +-------------+                          *
-*   |  rax    |   1     |      |             |                          *
+*   |  rcx    |   1     |      |             |                          *
 *   +---------+---------+      |  stack      |                          *
-*   |  rbx    |   3     |      + - - - - - - +                          *
+*   |  rdx    |   3     |      + - - - - - - +                          *
 *   +---------+---------+      | 9 (1st item)|                          *
-*   |  rcx    |   5     |      +------+------+ <-- `rsp` points here    *
+*   |  r8     |   5     |      +------+------+ <-- `rsp` points here    *
 *   +---------+---------+      |      |      |                          *
-*   |  rdx    |   7     |      |      |      |                          *
+*   |  r9     |   7     |      |      |      |                          *
 *   +---------+---------+      |      v      |                          *
 *   |  ...    |   ...   |      | (grows down)|                          *
 *   +---------+---------+      +-------------+                          *
@@ -5111,6 +5111,8 @@ tutorial, or even in the future as well:
 
 * [Aras Pranckevičius](https://twitter.com/aras_p), for the Markdeep template
   used in this tutorial.
+
+* Michael H. Su, for helping point out an error in one of the diagrams.
 
 
 <style class="fallback">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'medium'};</script>
