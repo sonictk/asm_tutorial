@@ -178,7 +178,7 @@ segment .data
 
 segment .text
 global main
-extern ExitProcess
+extern exit
 
 extern printf
 
@@ -190,8 +190,8 @@ main:
     lea     rcx, [msg]
     call    printf
 
-    xor     rax, rax
-    call    ExitProcess
+    xor     ecx, ecx
+    call    exit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You might be asking, "what on earth am I typing here?" at this point. We'll go
